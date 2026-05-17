@@ -3,6 +3,44 @@
 Simple ReAct agent
 Agent generated with `agents-cli` version `0.1.1`
 
+## PoC: Reproduce session.id bug
+
+This project contains a reproduction script for a bug in `openinference-instrumentation-google-adk` where sub-agent spans are stamped with the wrong `session.id`.
+
+### Prerequisites
+
+1.  **Configure Environment**: Create a `.env` file and set your `GOOGLE_API_KEY`.
+    ```bash
+    cp .env.sample .env
+    # Edit .env and add your GOOGLE_API_KEY
+    ```
+
+### Running the PoC
+
+Run the reproduction script using `uv`:
+
+```bash
+uv run python poc.py
+```
+
+### Expected Results
+
+The script will output a table of spans and their `session.id`. If the bug is present, you will see `✗ BUG` next to sub-agent spans (like `agent_run [sub_agent]`) because they use an ADK-internal UUID instead of the `known-session-id-abc123` provided to the runner.
+
+```text
+──────────────────────────────────────────────────────────────────────
+SPAN NAME                                session.id
+──────────────────────────────────────────────────────────────────────
+...
+agent_run [sub_agent]                    <uuid>  ✗ BUG
+...
+──────────────────────────────────────────────────────────────────────
+
+❌ BUG CONFIRMED: 2 span(s) have wrong session.id:
+   - call_llm
+   - agent_run [sub_agent]
+```
+
 ## Project Structure
 
 ```

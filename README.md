@@ -26,7 +26,7 @@ Run the reproduction script using `uv`:
 uv run python poc.py
 ```
 
-## Expected Results
+## Results that demonstrates the bug
 
 The script will output a table of spans and their `session.id`. If the bug is present, you will see `✗ BUG` next to sub-agent spans because they use an ADK-internal UUID instead of `known-session-id-abc123`.
 

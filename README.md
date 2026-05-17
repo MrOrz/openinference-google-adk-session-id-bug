@@ -23,7 +23,7 @@ Confirm that when a root agent invokes a sub-agent via `AgentTool`, the sub-agen
 Run the reproduction script using `uv`:
 
 ```bash
-uv run python poc.py
+uv run --env-file .env python poc.py
 ```
 
 ## Results that demonstrates the bug

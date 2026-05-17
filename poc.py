@@ -56,21 +56,28 @@ async def run():
         print(f"\n{'─' * 70}")
 
     spans = exporter.get_finished_spans()
-    print(f"\n{'─' * 70}")
-    print(f"{'SPAN NAME':<40} {'session.id':}")
-    print(f"{'─' * 70}")
+    span_id_to_name = {span.context.span_id: span.name for span in spans}
+
+    print(f"\n{'─' * 110}")
+    print(f"{'SPAN NAME':<35} {'PARENT':<25} {'session.id':}")
+    print(f"{'─' * 110}")
 
     bugs = []
     for span in spans:
+        parent_id = span.parent.span_id if span.parent else None
+        parent_name = (
+            span_id_to_name.get(parent_id, "(root)") if parent_id else "(root)"
+        )
         attrs = dict(span.attributes or {})
         sid = attrs.get("session.id", "(none)")
         wrong = isinstance(sid, str) and sid != SESSION_ID and sid != "(none)"
         flag = "  ✗ BUG" if wrong else ""
-        print(f"{span.name:<40} {sid}{flag}")
+        print(f"{span.name:<35} {parent_name:<25} {sid}{flag}")
         if wrong:
             bugs.append(span.name)
 
-    print(f"{'─' * 70}")
+    print(f"{'─' * 110}")
+
     if bugs:
         print(f"\n❌ BUG CONFIRMED: {len(bugs)} span(s) have wrong session.id:")
         for name in bugs:

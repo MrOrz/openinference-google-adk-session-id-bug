@@ -47,12 +47,13 @@ async def run():
         session_service=session_service,
     )
 
-    async for _ in runner.run_async(
+    async for event in runner.run_async(
         user_id=USER_ID,
         session_id=SESSION_ID,
         new_message=types.Content(role="user", parts=[types.Part(text="ping")]),
     ):
-        pass
+        print(f"  → Agent event: {event}")
+        print(f"\n{'─' * 70}")
 
     spans = exporter.get_finished_spans()
     print(f"\n{'─' * 70}")
